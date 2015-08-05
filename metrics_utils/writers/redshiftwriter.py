@@ -154,8 +154,8 @@ class RedshiftWriter(object):
         CREDENTIALS 'aws_access_key_id={AWS_ACCESS_KEY};aws_secret_access_key={AWS_SECRET_KEY}'
         CSV IGNOREHEADER 1 delimiter ',' gzip  TRUNCATECOLUMNS;
         '''.format(name=name, columns=columns, bucket_name=bucket_name,
-                   AWS_ACCESS_KEY= self.config.get('AWS_ACCESS_KEY'),
-                   self.config.get('AWS_SECRET_KEY=AWS_SECRET_KEY'))
+                   AWS_ACCESS_KEY=self.config.get('AWS_ACCESS_KEY'),
+                   AWS_SECRET_KEY=self.config.get('AWS_SECRET_KEY'))
 
         if print_sql:
             sys.stdout.write(sql + "\n")
