@@ -5,26 +5,32 @@ import psycopg2
 from sqlalchemy import create_engine
 from db import DB
 
-from utils.config import get_io_config
-
-env = get_io_config('redshift')
-DB_USER, DB_PWD, DB_HOST, DB_NAME, S3_BUCKET, AWS_ACCESS_KEY, AWS_SECRET_KEY = env.DB_USER, env.DB_PWD, env.DB_HOST, env.DB_NAME, env.S3_BUCKET, env.AWS_ACCESS_KEY, env.AWS_SECRET_KEY
 
 class RedshiftWriter(object):
     '''Write to a postgres database'''
 
-    def __init__(self, module):
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', 'S3_BUCKET',
+                       'AWS_ACCESS_KEY', 'AWS_SECRET_KEY']
+
+    def __init__(self, config, module):
+
+        for var in self.required_config:
+            if var not in config:
+                raise ValueError("missing config var: %s" % var)
+
+        self.config = config
+
         self.module = module
 
         sys.stdout.write('{} INIT REDSHIFT WRITER FOR MODULE {}:\nDATABASE: {} HOST: {}\n'.format(__name__,
             module, DB_NAME, DB_HOST))
 
         rs_settings =  {
-            'username':DB_USER,
-            'password':DB_PWD,
-            'hostname':DB_HOST,
-            'dbname':DB_NAME,
-                }
+            'username': self.config.get('DB_USER'),
+            'password': self.config.get('DB_PWD'),
+            'hostname': self.config.get('DB_HOST'),
+            'dbname': self.config.get('DB_NAME'),
+        }
 
         rs_conn_str = " dbname='{dbname}' user='{username}' host='{hostname}' port='5439' password='{password}'".format(
                 **rs_settings)
@@ -102,8 +108,8 @@ class RedshiftWriter(object):
 
         except ImportError:
             raise Exception("Couldn't find boto library. Please ensure it is installed")
-        s3_bucket = S3_BUCKET
-        conn = S3Connection(AWS_ACCESS_KEY, AWS_SECRET_KEY)
+        s3_bucket = self.config.get('S3_BUCKET')
+        conn = S3Connection(self.config.get('AWS_ACCESS_KEY'), self.config.get('AWS_SECRET_KEY'))
         bucket = conn.get_bucket(s3_bucket)
         bucket_name = s3_bucket
 
@@ -148,7 +154,8 @@ class RedshiftWriter(object):
         CREDENTIALS 'aws_access_key_id={AWS_ACCESS_KEY};aws_secret_access_key={AWS_SECRET_KEY}'
         CSV IGNOREHEADER 1 delimiter ',' gzip  TRUNCATECOLUMNS;
         '''.format(name=name, columns=columns, bucket_name=bucket_name,
-                   AWS_ACCESS_KEY=AWS_ACCESS_KEY, AWS_SECRET_KEY=AWS_SECRET_KEY)
+                   AWS_ACCESS_KEY= self.config.get('AWS_ACCESS_KEY'),
+                   self.config.get('AWS_SECRET_KEY=AWS_SECRET_KEY'))
 
         if print_sql:
             sys.stdout.write(sql + "\n")
