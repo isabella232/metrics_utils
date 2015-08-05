@@ -18,7 +18,7 @@ setup(
     packages=find_packages(),
     package_dir={"metrics_utils": "utils"},
     description="Metrics script utils",
-    long_description=open("README.rst").read(),
+    long_description=open("README.md").read(),
     classifiers=[
         # Maturity
         #   3 - Alpha
