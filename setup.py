@@ -16,7 +16,7 @@ setup(
     url="https://github.com/namely/metrics_utils",
     license="",
     packages=find_packages(),
-    package_dir={"metrics_utils": "utils"},
+    package_dir={"metrics_utils": "metrics_utils"},
     description="Metrics script utils",
     long_description=open("README.md").read(),
     classifiers=[
