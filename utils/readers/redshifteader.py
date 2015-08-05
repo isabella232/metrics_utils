@@ -1,17 +1,22 @@
 import psycopg2
 import pandas as pd
 
-from utils.config import get_io_config
-
-env = get_io_config('redshift')
-DB_USER, DB_PWD, DB_HOST, DB_NAME = env.DB_USER, env.DB_PWD, env.DB_HOST, env.DB_NAME
-
 class RedshiftReader(object):
     '''Write to a postgres database'''
 
-    def __init__(self, module, custom_settings=None):
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME']
+
+    def __init__(self, config, module, custom_settings=None):
+        for var in self.required_config:
+            if var not in config:
+                raise ValueError("missing config var: %s" % var)
+
+        self.config = config
+
         rs_conn_str = " dbname='{}' user='{}' host='{}' port='5439' password='{}'".format(
-                DB_NAME, DB_USER,DB_HOST, DB_PWD)
+                self.config.get('DB_NAME'), self.config.get('DB_USER'),
+                self.config.get('DB_HOST'),  self.config.get('DB_PWD'))
+
         self.module = module
 
         print('INIT POSTGRES READER FOR MODULE {}'.format(module))
