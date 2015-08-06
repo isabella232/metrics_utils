@@ -15,7 +15,7 @@ class RedshiftReader(object):
 
         rs_conn_str = " dbname='{}' user='{}' host='{}' port='{}' password='{}'".format(
                 self.config.get('DB_NAME'), self.config.get('DB_USER'),
-                self.config.get('DB_PORT'), self.config.get('DB_HOST'),
+                self.config.get('DB_HOST'), self.config.get('DB_PORT')
                 self.config.get('DB_PWD'))
 
         self.module = module
