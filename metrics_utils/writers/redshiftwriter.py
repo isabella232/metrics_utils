@@ -33,7 +33,7 @@ class RedshiftWriter(object):
             'port': self.config.get('DB_PORT'),
         }
 
-        rs_conn_str = " dbname='{dbname}' user='{username}' host='{hostname}' port='port' password='{password}'".format(
+        rs_conn_str = " dbname='{dbname}' user='{username}' host='{hostname}' port='{port}' password='{password}'".format(
                 **rs_settings)
 
         rs_sqlalchemy_str = 'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'.format(
