@@ -10,13 +10,12 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import run_flow, argparser
 
-from config import get_config, decode_var
 
-
-env = get_config([('io', 'google_drive')])
-
-GDRIVE_CLIENT_SECRET, GDRIVE_TOKEN_SECRET = decode_var(env.GDRIVE_CLIENT_SECRET, True),\
-                                            decode_var(env.GDRIVE_TOKEN_SECRET, True)
+def decode_var(var, jsonize=False):
+    var = base64.b64decode(var)
+    if jsonize:
+        var = json.loads(var)
+    return var
 
 def create_tempfile_from_var(var, file_suffix='.json'):
     var_tempfile = tempfile.NamedTemporaryFile(suffix=file_suffix)
@@ -24,10 +23,6 @@ def create_tempfile_from_var(var, file_suffix='.json'):
     var_tempfile.flush()
     return var_tempfile
 
-# The file with the OAuth 2.0 Client details for authentication and authorization.
-SECRETS_FILE = create_tempfile_from_var(GDRIVE_CLIENT_SECRET)
-#The file with the refresh token and access code
-TOKEN_FILE = create_tempfile_from_var(GDRIVE_TOKEN_SECRET, file_suffix='.dat')
 
 # A file to store the access token
 PARSER = argparse.ArgumentParser(parents=[argparser])
@@ -35,20 +30,36 @@ FLAGS = PARSER.parse_args()
 
 class GoogleAuth(object):
     """Base Google Authentication Object"""
+    required_config = ['GDRIVE_CLIENT_SECRET', 'GDRIVE_TOKEN_SECRET', ]
+
     def __init__(self):
+
+        for var in self.required_config:
+            if var not in config:
+                raise ValueError("missing config var: %s" % var)
+
+        self.config = config
+        GDRIVE_CLIENT_SECRET = decode_var(self.config.get('GDRIVE_CLIENT_SECRET'), True)
+        GDRIVE_TOKEN_SECRET =  decode_var(self.config.get('GDRIVE_TOKEN_SECRET'), True)
+
+        # The file with the OAuth 2.0 Client details for authentication and authorization.
+        self.SECRETS_FILE = create_tempfile_from_var(GDRIVE_CLIENT_SECRET)
+        #The file with the refresh token and access code
+        self.TOKEN_FILE = create_tempfile_from_var(GDRIVE_TOKEN_SECRET, file_suffix='.dat')
+
         self.scope = None
         self.service_name = ''
         self.version_name = ''
 
     def prepare_credentials(self, flags=None):
         # Retrieve existing credendials
-        storage = Storage(TOKEN_FILE.name)
+        storage = Storage(self.TOKEN_FILE.name)
         credentials = storage.get()
         # If existing credentials are invalid and Run Auth flow
         # the run method will store any new credentials
         if credentials is None or credentials.invalid:
             # The Flow object to be used if we need to authenticate.
-            self.flow = flow_from_clientsecrets(SECRETS_FILE.name,
+            self.flow = flow_from_clientsecrets(self.SECRETS_FILE.name,
                     scope=self.scope, message='Client Secret file is missing')
             credentials = run_flow(self.flow, storage, FLAGS) #run Auth Flow and store credentials
         return credentials
@@ -161,7 +172,8 @@ class GoogleDrive(GoogleAuth):
 
     def download_spreadsheet(self, file_id, save_to):
         '''downloads a google spreadsheet to a local file'''
-        file_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        file_type = ('application/vnd.openxmlformats-officedocument'
+                    '.spreadsheetml.sheet')
         return self.get_file(file_id, download_format=file_type, save_to=save_to)
 
     def retrieve_all_files(self):

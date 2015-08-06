@@ -78,7 +78,8 @@ def convert_dates(date, date_format):
 
 def df_format_timestamp(df, column='time', input_format=None, unit=None):
     if input_format:
-        df[column] = df[column].apply(lambda x: datetime.strptime(str(x),input_format))
+        df[column] = df[column].apply(lambda x:
+                                      datetime.strptime(str(x),input_format))
     elif unit:
         df[column] = pd.to_datetime(df[column], unit=unit)
     else:
@@ -176,7 +177,8 @@ def crab_task(task_name, secrets=None):
             task_traceback=traceback.format_exc()
             if secrets:
                 for secret in secrets:
-                    task_traceback = task_traceback.replace(str(secret), '*' * len(str(secret)))
+                    task_traceback = task_traceback.replace(
+                        str(secret), '*' * 4)
     task_stdout = stdout_stream.getvalue()
     try:
         task_stdout = task_stdout.encode('ascii', 'replace')
@@ -185,7 +187,7 @@ def crab_task(task_name, secrets=None):
     #anonymize secrets
     if secrets:
         for secret in secrets:
-            task_stdout = task_stdout.replace(str(secret), '*' * len(str(secret)))
+            task_stdout = task_stdout.replace(str(secret), '*' * 4)
 
     crab.finish(status=task_status, stdoutdata=task_stdout,
                 stderrdata=task_traceback)

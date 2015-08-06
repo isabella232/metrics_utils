@@ -22,8 +22,10 @@ class RedshiftWriter(object):
 
         self.module = module
 
-        sys.stdout.write('{} INIT REDSHIFT WRITER FOR MODULE {}:\nDATABASE: {} HOST: {}\n'.format(__name__,
-            module, self.config.get('DB_NAME'), self.config.get('DB_HOST')))
+        sys.stdout.write('{} INIT REDSHIFT WRITER FOR MODULE {}:\nDATABASE: {} '
+                         'HOST: {}\n'.format(__name__, module,
+                         self.config.get('DB_NAME'),
+                         self.config.get('DB_HOST')))
 
         rs_settings =  {
             'username': self.config.get('DB_USER'),
