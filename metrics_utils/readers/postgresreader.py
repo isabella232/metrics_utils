@@ -2,16 +2,22 @@ from db import DB
 
 from utils.config import get_io_config
 env = get_io_config('redshift')
-DB_USER, DB_PWD, DB_HOST, DB_NAME, DB_PORT= env.DB_USER, env.DB_PWD, env.DB_HOST, env.DB_NAME, env.DB_PORT
 
 class PostgresReader(object):
     '''Write to a postgres database'''
+    
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', 'DB_PORT',]
 
-    def __init__(self, module, custom_settings=None):
-        reader_settings = {'username':DB_USER,
-                               'password':DB_PWD,
-                               'hostname':DB_HOST,
-                               'dbname':DB_NAME,
+    def __init__(self, config, module, custom_settings=None):
+        
+        for var in self.required_config:
+            if var not in config:
+                raise ValueError("missing config var: %s" % var)
+                
+        reader_settings = {'username': self.config.get('DB_USER'),
+                               'password': self.config.get('DB_PWD'),
+                               'hostname': self.config.get('DB_HOST'),
+                               'dbname': self.config.get('DB_NAME'),
                                'dbtype':'redshift',
                                'schemas':['']
                                }
