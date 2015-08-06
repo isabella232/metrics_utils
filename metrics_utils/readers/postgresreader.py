@@ -14,6 +14,8 @@ class PostgresReader(object):
             if var not in config:
                 raise ValueError("missing config var: %s" % var)
                 
+        self.config = config
+                
         reader_settings = {'username': self.config.get('DB_USER'),
                                'password': self.config.get('DB_PWD'),
                                'hostname': self.config.get('DB_HOST'),
