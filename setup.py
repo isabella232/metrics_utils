@@ -13,7 +13,7 @@ required = [
 setup(
     name="metrics_utils",
     version="0.4.4",
-    author="Manuel Garrido",
+    author="Manuel Garrido, Richard Fernandez, Luigi Patruno, Attila Maczak",
     author_email="dev@namely.com",
     url="https://github.com/namely/metrics_utils",
     license="",
