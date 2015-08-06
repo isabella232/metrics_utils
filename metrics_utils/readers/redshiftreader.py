@@ -4,7 +4,7 @@ import pandas as pd
 class RedshiftReader(object):
     '''Write to a postgres database'''
 
-    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME']
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_PORT', 'DB_NAME']
 
     def __init__(self, config, module, custom_settings=None):
         for var in self.required_config:
@@ -13,9 +13,10 @@ class RedshiftReader(object):
 
         self.config = config
 
-        rs_conn_str = " dbname='{}' user='{}' host='{}' port='5439' password='{}'".format(
+        rs_conn_str = " dbname='{}' user='{}' host='{}' port='{}' password='{}'".format(
                 self.config.get('DB_NAME'), self.config.get('DB_USER'),
-                self.config.get('DB_HOST'),  self.config.get('DB_PWD'))
+                self.config.get('DB_PORT'), self.config.get('DB_HOST'),
+                self.config.get('DB_PWD'))
 
         self.module = module
 
