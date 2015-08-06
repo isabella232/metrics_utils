@@ -1,10 +1,9 @@
 from db import DB
 
-
 class PostgresReader(object):
     '''Write to a postgres database'''
 
-    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', 'DB_PORT',]
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', ]
 
     def __init__(self, config, module, custom_settings=None):
 
@@ -14,10 +13,10 @@ class PostgresReader(object):
 
         self.config = config
 
-        reader_settings = {'username':self.config.get('DB_USER'),
-                               'password':self.config.get('DB_PWD'),
-                               'hostname':self.config.get('DB_HOST'),
-                               'dbname':self.config.get('DB_NAME'),
+        reader_settings = {'username': self.config.get('DB_USER'),
+                               'password': self.config.get('DB_PWD'),
+                               'hostname': self.config.get('DB_HOST'),
+                               'dbname': self.config.get('DB_NAME'),
                                'dbtype':'redshift',
                                'schemas':[''],
                                }

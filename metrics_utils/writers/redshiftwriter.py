@@ -9,7 +9,7 @@ from db import DB
 class RedshiftWriter(object):
     '''Write to a postgres database'''
 
-    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', 'S3_BUCKET',
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_PORT', 'DB_NAME', 'S3_BUCKET',
                        'AWS_ACCESS_KEY', 'AWS_SECRET_KEY']
 
     def __init__(self, config, module):
@@ -32,12 +32,13 @@ class RedshiftWriter(object):
             'password': self.config.get('DB_PWD'),
             'hostname': self.config.get('DB_HOST'),
             'dbname': self.config.get('DB_NAME'),
+            'port': self.config.get('DB_PORT'),
         }
 
-        rs_conn_str = " dbname='{dbname}' user='{username}' host='{hostname}' port='5439' password='{password}'".format(
+        rs_conn_str = " dbname='{dbname}' user='{username}' host='{hostname}' port='{port}' password='{password}'".format(
                 **rs_settings)
 
-        rs_sqlalchemy_str = 'postgresql://{username}:{password}@{hostname}:5439/{dbname}'.format(
+        rs_sqlalchemy_str = 'postgresql://{username}:{password}@{hostname}:{port}/{dbname}'.format(
                 **rs_settings)
 
         self.conn = psycopg2.connect(rs_conn_str)

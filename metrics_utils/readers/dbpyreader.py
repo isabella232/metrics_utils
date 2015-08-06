@@ -4,8 +4,7 @@ from db import DB
 class DBPYReader(object):
     '''Uses db.py as a generic interface to a database'''
 
-
-    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', 'DB_PORT',]
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME']
 
     def __init__(self, config, module, custom_settings=None):
 
@@ -20,7 +19,7 @@ class DBPYReader(object):
                            'dbname':self.config.get('DB_NAME'),
                            'dbtype':'redshift',
                            'schemas':['']
-                               }
+                          }
         if custom_settings:
             reader_settings.update(custom_settings)
 
