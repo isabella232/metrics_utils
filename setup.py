@@ -6,6 +6,8 @@ required = [
     "psycopg2",
     "SQLAlchemy==0.9.4",
     "db.py",
+    "boto",
+    "pandas",
 ]
 
 setup(

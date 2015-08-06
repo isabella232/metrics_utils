@@ -3,20 +3,30 @@ import sys
 
 from sqlalchemy import create_engine
 
-from utils.config import get_io_config
-env = get_io_config('redshift')
-DB_USER, DB_PWD, DB_HOST, DB_NAME, DB_PORT= env.DB_USER, env.DB_PWD, env.DB_HOST, env.DB_NAME, env.DB_PORT
 
 class PostgresWriter(object):
     '''Write to a postgres database'''
 
-    def __init__(self, module):
+    required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME', 'DB_PORT',]
+
+    def __init__(self, config, module):
+
+        for var in self.required_config:
+            if var not in config:
+                raise ValueError("missing config var: %s" % var)
+
+        self.config = config
+
         self.module = module
         pg_conn_str = "postgresql://{}:{}@{}:{}/{}".format(
-                DB_USER, DB_PWD, DB_HOST, DB_PORT, DB_NAME
+                self.config.get('DB_USER'),
+                self.config.get('DB_PWD'),
+                self.config.get('DB_HOST'),
+                self.config.get('DB_PORT'),
+                self.config.get('DB_NAME'),
                 )
         sys.stdout.write('INIT POSTGRES WRITER FOR MODULE {}:\nDATABASE: {} HOST: {}'.format(module,
-            DB_NAME, DB_HOST))
+            self.config.get('DB_NAME'), self.config.get('DB_HOST')))
         self.engine = create_engine(pg_conn_str)
 
     def write(self, df, table, if_exists='append'):

@@ -23,7 +23,7 @@ class RedshiftWriter(object):
         self.module = module
 
         sys.stdout.write('{} INIT REDSHIFT WRITER FOR MODULE {}:\nDATABASE: {} HOST: {}\n'.format(__name__,
-            module, DB_NAME, DB_HOST))
+            module, self.config.get('DB_NAME'), self.config.get('DB_HOST')))
 
         rs_settings =  {
             'username': self.config.get('DB_USER'),
@@ -107,7 +107,8 @@ class RedshiftWriter(object):
                 bucket_location = Location.DEFAULT
 
         except ImportError:
-            raise Exception("Couldn't find boto library. Please ensure it is installed")
+            raise Exception("Couldn't find boto library. "
+                            "Please ensure it is installed")
         s3_bucket = self.config.get('S3_BUCKET')
         conn = S3Connection(self.config.get('AWS_ACCESS_KEY'), self.config.get('AWS_SECRET_KEY'))
         bucket = conn.get_bucket(s3_bucket)
