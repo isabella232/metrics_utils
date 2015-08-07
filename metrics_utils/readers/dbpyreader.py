@@ -6,7 +6,7 @@ class DBPYReader(object):
 
     required_config = ['DB_USER', 'DB_PWD', 'DB_HOST', 'DB_NAME']
 
-    def __init__(self, config, module, custom_settings=None):
+    def __init__(self, config, module, custom_settings=None, db=None):
 
         for var in self.required_config:
             if var not in config:
