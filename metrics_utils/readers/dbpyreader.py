@@ -22,6 +22,9 @@ class DBPYReader(object):
                           }
         if custom_settings:
             reader_settings.update(custom_settings)
+            
+        if db:
+            reader_settings['dbtype'] = db 
 
         self.module = module
         print('INIT DB.PY READER FOR MODULE {}'.format(module))
