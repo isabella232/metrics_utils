@@ -88,7 +88,8 @@ class RedshiftWriter(object):
             else:
                 sys.stdout.write('{}: WRITING BATCH\n'.format(__name__))
                 df.to_sql(table, self.engine,if_exists='append',index=False)
-            self.clean_table(table)
+            # This logic needs to be separated from this script
+            #self.clean_table(table)
         else:
             if s3_copy:
                 sys.stdout.write('{}: WRITING S3 COPY\n'.format(__name__))
