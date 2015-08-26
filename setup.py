@@ -1,6 +1,13 @@
 from distutils.core import setup
 from setuptools import find_packages
 
+install_requires=[
+   "psycopg2",
+   "SQLAlchemy==0.9.4",
+   "db.py",
+   "boto",
+   "pandas",
+]
 
 required = [
     "psycopg2",
