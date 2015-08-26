@@ -24,6 +24,7 @@ setup(
        "db.py",
        "boto",
        "pandas",
+       "pyyaml"
     ],
     package_dir={"metrics_utils": "metrics_utils"},
     description="Metrics script utils",
