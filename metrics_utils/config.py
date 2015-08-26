@@ -5,9 +5,10 @@ import json
 
 import yaml
 
-config_file = os.path.abspath(os.path.join(os.path.dirname( __file__ ), os.pardir, 'config.yml'))
-with open(config_file, 'r') as f:
-    config = yaml.load(f.read())
+# TODO This is crashing the metrics-scripts because there is no such config file
+#config_file = os.path.abspath(os.path.join(os.path.dirname( __file__ ), os.pardir, 'config.yml'))
+#with open(config_file, 'r') as f:
+#    config = yaml.load(f.read())
 
 class Env(object):
     def __init__(self, adict):
