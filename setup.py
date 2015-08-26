@@ -1,13 +1,6 @@
 from distutils.core import setup
 from setuptools import find_packages
 
-install_requires=[
-   "psycopg2",
-   "SQLAlchemy==0.9.4",
-   "db.py",
-   "boto",
-   "pandas",
-]
 
 required = [
     "psycopg2",
@@ -25,6 +18,13 @@ setup(
     url="https://github.com/namely/metrics_utils",
     license="",
     packages=find_packages(),
+    install_requires=[
+       "psycopg2",
+       "SQLAlchemy==0.9.4",
+       "db.py",
+       "boto",
+       "pandas",
+    ],
     package_dir={"metrics_utils": "metrics_utils"},
     description="Metrics script utils",
     long_description=open("README.md").read(),
